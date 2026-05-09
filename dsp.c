@@ -1,26 +1,71 @@
-static float phase = 0.0f;
-static float g_freq = 440.0f;
-static float g_gain = 0.3f;
+// dsp.c
+#include <math.h>
+
+#define MAX_VOICES 16
+
+typedef struct {
+    int   active;
+    float freq;
+    float gain;
+    float phase;
+} Voice;
+
+static Voice voices[MAX_VOICES];
 
 __declspec(dllexport)
-void dsp_set_freq(float f) {
-    g_freq = f;
+void dsp_all_notes_off(void) {
+    for (int i = 0; i < MAX_VOICES; i++)
+        voices[i].active = 0;
 }
 
 __declspec(dllexport)
-void dsp_set_gain(float g) {
-    g_gain = g; // insert badass skeleton keyboard here
+void dsp_note_on(float freq, float gain) {
+    // find a free voice
+    for (int i = 0; i < MAX_VOICES; i++) {
+        if (!voices[i].active) {
+            voices[i].active = 1;
+            voices[i].freq   = freq;
+            voices[i].gain   = gain;
+            voices[i].phase  = 0.0f;
+            return;
+        }
+    }
+    // simple: if no free voice, steal voice 0
+    voices[0].active = 1;
+    voices[0].freq   = freq;
+    voices[0].gain   = gain;
+    voices[0].phase  = 0.0f;
+}
+
+__declspec(dllexport)
+void dsp_note_off(float freq) {
+    // naive: turn off first voice with matching freq
+    for (int i = 0; i < MAX_VOICES; i++) {
+        if (voices[i].active && voices[i].freq == freq) {
+            voices[i].active = 0;
+            return;
+        }
+    }
 }
 
 __declspec(dllexport)
 void dsp_process(float* out, int frames, float sr) {
-    float inc = g_freq / sr;
-
     for (int i = 0; i < frames; i++) {
-        out[i] = (phase < 0.5f ? g_gain : -g_gain);
+        float mix = 0.0f;
 
-        phase += inc;
-        if (phase >= 1.0f)
-            phase -= 1.0f;
+        for (int v = 0; v < MAX_VOICES; v++) {
+            if (!voices[v].active) continue;
+
+            float inc = voices[v].freq / sr;
+            float s   = (voices[v].phase < 0.5f ? voices[v].gain : -voices[v].gain);
+
+            mix += s;
+
+            voices[v].phase += inc;
+            if (voices[v].phase >= 1.0f)
+                voices[v].phase -= 1.0f;
+        }
+
+        out[i] = mix;
     }
 }

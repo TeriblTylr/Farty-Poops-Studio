@@ -4,7 +4,7 @@
 void dsp_process(float* out, int frames, float sr);
 
 void audio_callback(ma_device* device, void* output, const void* input, ma_uint32 frameCount) {
-    dsp_process((float*)output, frameCount, (float)device->sampleRate);
+    dsp_process((float*)output, (int)frameCount, (float)device->sampleRate);
 }
 
 __declspec(dllexport)
