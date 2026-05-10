@@ -1,21 +1,31 @@
 notes = {}
 
+notes.ntf = function(note)
+    local note_freqs = {}
+    if note then
+        for i = 1, 128 do
+            table.insert(note_freqs, note, 440*(2^((note-70)/12)))
+        end
+    end
+    return note_freqs[note]
+end
+
 notes.ktn = function(key)
-    local note_freqs = {
-        ["a"] = 440.00,
-        ["w"] = 466.16,
-        ["s"] = 493.88,
-        ["e"] = 523.25,
-        ["d"] = 554.37,
-        ["f"] = 587.33,
-        ["t"] = 622.25,
-        ["g"] = 659.25,
-        ["y"] = 698.46,
-        ["h"] = 739.99,
-        ["u"] = 783.99,
-        ["j"] = 830.61
+    local key_notes = {
+        ["a"] = 70,
+        ["w"] = 71,
+        ["s"] = 72,
+        ["e"] = 73,
+        ["d"] = 74,
+        ["f"] = 75,
+        ["t"] = 76,
+        ["g"] = 77,
+        ["y"] = 78,
+        ["h"] = 79,
+        ["u"] = 80,
+        ["j"] = 81
     }
-    return note_freqs[key]
+    return key_notes[key]
 end
 
 return notes
