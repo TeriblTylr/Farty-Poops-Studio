@@ -7,10 +7,6 @@ int  start_audio();
 ]]
 local audio = ffi.load("audio.dll")
 
-local pf = nil
-
-local natps = {}
-
 function Love.load()
     Notes = require("notes")
     Roll = require("roll")
@@ -56,25 +52,7 @@ function Love.mousepressed(x, y, button, istouch)
 end
 
 function Love.update(dt)
-    if Roll.playing then
-        local t2 = Love.timer.getTime() - T
-        local pos = math.ceil((t2/60)*(Tempo))
-        local rNotes = Roll:getNotes()
-        local note = rNotes[pos]
-        local cf = Notes.ntf(note)
-        if natps[pos] == nil then
-            print(pos)
-            if note then
-                local pf = Notes.ntf(note-1)
-            end
-            if cf ~= nil then
-                audio.dsp_note_on(cf, 0.5)
-            end
-            natps[pos] = true
-        end
-    elseif pf ~= nil then
-        audio.dsp_note_off(pf)
-    end
+    Roll:update(audio)
 end
 
 
