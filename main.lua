@@ -9,19 +9,14 @@ local audio = ffi.load("audio.dll")
 
 local pf = nil
 
-local function play(cur, pre)
-    audio.dsp_note_on(cur, 0.5)
-    if pre ~= nil then
-        audio.dsp_note_off(pre)
-    end
-end
+local natps = {}
 
 function Love.load()
     Notes = require("notes")
     Roll = require("roll")
     H = Love.graphics.getHeight()
     W = Love.graphics.getWidth()
-    Tempo = 100
+    Tempo = 200
 end
 
 local audio_started = false
@@ -67,12 +62,15 @@ function Love.update(dt)
         local rNotes = Roll:getNotes()
         local note = rNotes[pos]
         local cf = Notes.ntf(note)
-        print(pos)
-        if note then
-            local pf = Notes.ntf(note-1)
-        end
-        if cf ~= nil then
-            play(cf, pf)
+        if natps[pos] == nil then
+            print(pos)
+            if note then
+                local pf = Notes.ntf(note-1)
+            end
+            if cf ~= nil then
+                audio.dsp_note_on(cf, 0.5)
+            end
+            natps[pos] = true
         end
     elseif pf ~= nil then
         audio.dsp_note_off(pf)
