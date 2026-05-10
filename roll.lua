@@ -24,7 +24,7 @@ function roll:pp()
     end
 end
 
-function roll:update(audio)
+function roll:update(audio, instrument)
     if roll.playing then
         local t2 = Love.timer.getTime() - T
         local pos = math.ceil((t2/60)*(Tempo))
@@ -38,7 +38,7 @@ function roll:update(audio)
                 roll.pf = Notes.ntf(pnote)
             end
             if cf ~= nil then
-                audio.dsp_note_on(cf, 0.5)
+                audio.dsp_note_on(instrument, cf, 0.5)
             end
             Roll.natps[pos] = true
         end

@@ -1,12 +1,12 @@
 Love = require("love") --require? i hardly know re.
 local ffi = require("ffi")
 ffi.cdef[[
-void dsp_note_on(float freq, float gain);
+void dsp_note_on(int timbre, float freq, float gain);
 void dsp_note_off(float freq);
 int  start_audio();
 ]]
 local audio = ffi.load("audio.dll")
-
+local instrument = 1
 function Love.load()
     Notes = require("notes")
     Roll = require("roll")
@@ -26,12 +26,18 @@ function Love.keypressed(key)
             audio_started = true
         end
         if freq then
-            audio.dsp_note_on(freq, 0.5)
+            audio.dsp_note_on(instrument, freq, 0.5)
         end
     end
     if key == "space" then
         Roll:pp()
         T = Love.timer.getTime()
+    end
+    if key == "1" then
+        instrument = 1
+    end
+    if key == "2" then
+        instrument = 2
     end
 end
 
@@ -52,7 +58,7 @@ function Love.mousepressed(x, y, button, istouch)
 end
 
 function Love.update(dt)
-    Roll:update(audio)
+    Roll:update(audio, instrument)
 end
 
 
