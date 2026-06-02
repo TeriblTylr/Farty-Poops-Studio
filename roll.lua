@@ -8,12 +8,18 @@ roll.pf = nil
 
 roll.natps = {}
 
+local ffi = require("ffi")
+
+ffi.cdef[[
+    
+]]
+
 function roll:addNote(pos, note)
-    roll.notes[pos] = note
+    
 end
 
 function roll:getNotes()
-    return roll.notes
+    
 end
 
 function roll:pp()
@@ -25,29 +31,7 @@ function roll:pp()
 end
 
 function roll:update(audio, instrument)
-    if roll.playing then
-        local t2 = Love.timer.getTime() - T
-        local pos = math.ceil((t2/60)*(Tempo))
-        local rNotes = Roll:getNotes()
-        local note = rNotes[pos]
-        local cf = Notes.ntf(note)
-        local pnote = rNotes[pos-1]
-        if roll.natps[pos] == nil then
-            print(pos)
-            if pnote then
-                roll.pf = Notes.ntf(pnote)
-            end
-            if cf ~= nil then
-                audio.dsp_note_on(instrument, cf, 0.5)
-            end
-            Roll.natps[pos] = true
-        end
-        if roll.natps[pos-1] == true then
-            if roll.pf ~= nil then audio.dsp_note_off(roll.pf) end
-        end
-    elseif roll.pf ~= nil then
-        audio.dsp_note_off(roll.pf)
-    end
+
 end
 
 function roll:draw(x, y)

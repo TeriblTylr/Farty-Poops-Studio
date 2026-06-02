@@ -53,7 +53,7 @@ function Love.mousepressed(x, y, button, istouch)
     if button == 1 then
         local gridx = math.ceil(x/20)
         local gridy = math.ceil(y/10)
-        Roll:addNote(gridx, gridy)
+        Roll:addNote(gridx, 85 - gridy)
     end
 end
 
@@ -65,6 +65,6 @@ end
 function Love.draw()
     local rNotes = Roll:getNotes()
     for pos, note in pairs(rNotes) do
-        Roll:draw(pos, note)
+        Roll:draw(pos, 85 - note)
     end
 end
