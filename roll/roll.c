@@ -72,15 +72,43 @@ typedef struct {
 __declspec(dllexport)
 rollNotes* read_pattern(unsigned short length)
 {
-    rollNotes *notes = malloc(length * sizeof(rollNotes));
+    const char *path = get_filepath();
+    FILE *f = fopen(path, "rb");
+    free((void*)path);
 
-    for (int i = 0; i < length; i++) {
-        notes[i].pos = i;
-        notes[i].posnotes = calloc(length, sizeof(unsigned short));
+    if (!f) {
+        perror("Failed to open file");
+        return NULL;
     }
 
+    // Skip length header
+    fseek(f, 2, SEEK_SET);
+
+    rollNotes *notes = malloc(length * sizeof(rollNotes));
+
+    unsigned int bytes_per_note = length / 8;
+
+    for (int note = 0; note < length; note++) {
+        notes[note].pos = note;
+        notes[note].posnotes = calloc(length, sizeof(unsigned short));
+
+        for (int byte = 0; byte < bytes_per_note; byte++) {
+            unsigned char b;
+            fread(&b, 1, 1, f);
+
+            for (int bit = 0; bit < 8; bit++) {
+                int pos = byte * 8 + bit;
+                if (pos < length) {
+                    notes[note].posnotes[pos] = (b >> bit) & 1;
+                }
+            }
+        }
+    }
+
+    fclose(f);
     return notes;
 }
+
 
 __declspec(dllexport)
 void free_pattern(rollNotes *notes, unsigned short length)

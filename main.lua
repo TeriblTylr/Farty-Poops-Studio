@@ -63,14 +63,12 @@ function Love.update(dt)
     -- Roll:update(audio, instrument)
 end
 
-
 function Love.draw()
     local rNotes = Roll:getNotes(L)
-
-    for pos = 0, L-1 do
-        local note = rNotes[pos]
-        for k = 0, L-1 do
-            local v = note.posnotes[k]
+    for note = 0, L-1 do
+        local row = rNotes[note]
+        for pos = 0, L-1 do
+            local v = row.posnotes[pos]
             Roll:draw(pos, v)
         end
     end
