@@ -12,7 +12,7 @@ function Love.load()
     Roll = require("roll/roll")
     H = Love.graphics.getHeight()
     W = Love.graphics.getWidth()
-    Tempo = 200
+    Tempo = 120
     L = 64
     Roll.initialize(L)
     Love.graphics.setColor(0.8,0,0)
@@ -54,8 +54,10 @@ end
 
 function Love.mousepressed(x, y, button, istouch)
     if button == 1 then
-        local gridx = math.ceil(x/16)
-        local gridy = math.ceil(y/32)
+        H = Love.graphics.getHeight()
+        W = Love.graphics.getWidth()
+        local gridx = math.floor(x/math.floor(W/L))
+        local gridy = math.floor(y/math.floor(H/128))
         Roll.addNote(L, gridx, gridy)
     end
 end
@@ -67,17 +69,15 @@ end
 function Love.draw()
     local rNotes = Roll:getNotes(L)
 
-    -- draw a simple grid: white if bit = 1, black if 0
-    for note = 0, L - 1 do           -- row index
+    for note = 0, 127 do
         local row = rNotes[note]
-        for pos = 0, L - 1 do        -- column index
+        for pos = 0, L - 1 do
             local v = row.posnotes[pos]
 
             if v ~= 0 then
-                -- example: each cell is 4x4 pixels
-                local x = pos * (W / 16)
-                local y = note * (H / 32)
-                Love.graphics.rectangle("fill", x, y, W / 16, H / 32)
+                local x = pos * math.floor(W / L)
+                local y = note * math.floor(H / 128)
+                Love.graphics.rectangle("fill", x, y, math.floor(W/L), math.floor(H/128))
             end
         end
     end
