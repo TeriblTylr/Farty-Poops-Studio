@@ -9,10 +9,13 @@ local audio = ffi.load("audio.dll")
 local instrument = 1
 function Love.load()
     Notes = require("notes")
-    Roll = require("roll")
+    Roll = require("roll/roll")
     H = Love.graphics.getHeight()
     W = Love.graphics.getWidth()
-    Tempo = 200
+    Tempo = 120
+    L = 64
+    Roll.initialize(L)
+    Love.graphics.setColor(0.8,0,0)
 end
 
 local audio_started = false
@@ -51,20 +54,33 @@ end
 
 function Love.mousepressed(x, y, button, istouch)
     if button == 1 then
-        local gridx = math.ceil(x/20)
-        local gridy = math.ceil(y/10)
-        Roll:addNote(gridx, gridy)
+        H = Love.graphics.getHeight()
+        W = Love.graphics.getWidth()
+        local gridx = math.floor(x/math.floor(W/L))
+        local gridy = math.floor(y/math.floor(H/128))
+        Roll.addNote(L, gridx, gridy)
     end
 end
 
 function Love.update(dt)
-    Roll:update(audio, instrument)
+    -- Roll:update(audio, instrument)
 end
 
-
 function Love.draw()
-    local rNotes = Roll:getNotes()
-    for pos, note in pairs(rNotes) do
-        Roll:draw(pos, note)
+    local rNotes = Roll:getNotes(L)
+
+    for note = 0, 127 do
+        local row = rNotes[note]
+        for pos = 0, L - 1 do
+            local v = row.posnotes[pos]
+
+            if v ~= 0 then
+                local x = pos * math.floor(W / L)
+                local y = note * math.floor(H / 128)
+                Love.graphics.rectangle("fill", x, y, math.floor(W/L), math.floor(H/128))
+            end
+        end
     end
+
+    Roll.free(rNotes, L)
 end
