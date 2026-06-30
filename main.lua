@@ -13,6 +13,8 @@ function Love.load()
     H = Love.graphics.getHeight()
     W = Love.graphics.getWidth()
     Tempo = 200
+    L = 64
+    Roll.initialize(L)
 end
 
 local audio_started = false
@@ -52,19 +54,26 @@ end
 function Love.mousepressed(x, y, button, istouch)
     if button == 1 then
         local gridx = math.ceil(x/20)
-        local gridy = math.ceil(y/10)
-        Roll:addNote(gridx, 85 - gridy)
+        local gridy = math.ceil(y/L)
+        Roll.addNote(L, gridx, gridy)
     end
 end
 
 function Love.update(dt)
-    Roll:update(audio, instrument)
+    -- Roll:update(audio, instrument)
 end
 
 
 function Love.draw()
-    local rNotes = Roll:getNotes()
-    for pos, note in pairs(rNotes) do
-        Roll:draw(pos, 85 - note)
+    local rNotes = Roll:getNotes(L)
+
+    for pos = 0, L-1 do
+        local note = rNotes[pos]
+        for k = 0, L-1 do
+            local v = note.posnotes[k]
+            Roll:draw(pos, v)
+        end
     end
+
+    Roll.free(rNotes, L)
 end

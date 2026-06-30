@@ -63,3 +63,30 @@ void write_pattern(unsigned short length, unsigned short pos, unsigned short not
 
     fclose(f);
 }
+
+typedef struct {
+    unsigned short pos;
+    unsigned short *posnotes;
+} rollNotes;
+
+__declspec(dllexport)
+rollNotes* read_pattern(unsigned short length)
+{
+    rollNotes *notes = malloc(length * sizeof(rollNotes));
+
+    for (int i = 0; i < length; i++) {
+        notes[i].pos = i;
+        notes[i].posnotes = calloc(length, sizeof(unsigned short));
+    }
+
+    return notes;
+}
+
+__declspec(dllexport)
+void free_pattern(rollNotes *notes, unsigned short length)
+{
+    for (int i = 0; i < length; i++) {
+        free(notes[i].posnotes);
+    }
+    free(notes);
+}
