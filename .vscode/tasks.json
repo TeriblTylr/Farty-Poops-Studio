@@ -2,10 +2,17 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Compile C",
+      "label": "Compile DSP",
       "type": "shell",
       "command": "gcc",
-      "args": ["-shared", "-o", "audio.dll", "miniaudio.c", "dsp.c", "-lwinmm"],
+      "args": ["-shared", "-o", "audio.dll", "audio/miniaudio.c", "audio/dsp.c", "-lwinmm"],
+      "group": "build"
+    },
+    {
+      "label" : "pianoroll dll",
+      "type" : "shell",
+      "command" : "gcc",
+      "args" : ["-shared", "-o", "roll.dll", "roll/roll.c"],
       "group": "build"
     }
   ]
