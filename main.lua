@@ -18,6 +18,7 @@ function Love.load()
     Tempo = 200
     L = 64
     Roll.initialize(L)
+    Love.graphics.setColor(0.9,0,0) --color? i hardly know or.
 end
 
 local audio_started = false
@@ -36,7 +37,6 @@ function Love.keypressed(key)
     end
     if key == "space" then
         Roll:pp()
-        T = Love.timer.getTime()
     end
     if key == "1" then
         instrument = 1
@@ -66,7 +66,7 @@ end
 
 
 local function every(interval, dt, timer)
-    timer = timer + dt
+    timer = timer + dt -- timer? i hardly know er.
     if timer >= interval then
         timer = timer - interval
         return true, timer
@@ -76,14 +76,14 @@ end
 
 
 function Love.update(dt)
-    
+
     local fire, newt = every(60 / Tempo, dt, t)
-    t = newt
+    t = newt -- lizard lizard lizard lizard
 
     if fire then
         Roll:update(audio, instrument)
     end
-    
+
 end
 function Love.draw()
     Roll:draw()

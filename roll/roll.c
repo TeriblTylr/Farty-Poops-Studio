@@ -58,7 +58,7 @@ void write_pattern(unsigned short length, unsigned short pos, unsigned short not
 
     bit ^= (1 << bit_offset);
 
-    fseek(f, -1, SEEK_CUR);
+    fseek(f, -1, SEEK_CUR); // seek_cur? i hardly know ur.
     fwrite(&bit, 1, 1, f);
 
     fclose(f);
@@ -81,7 +81,6 @@ rollNotes* read_pattern(unsigned short length)
         return NULL;
     }
 
-    // Skip length header
     fseek(f, 2, SEEK_SET);
 
     rollNotes *notes = malloc(128 * sizeof(rollNotes));
