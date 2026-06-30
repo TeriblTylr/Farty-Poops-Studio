@@ -52,7 +52,7 @@ function roll:update(audio, instrument)
             end
         end
         self.free(self.rNotes, L)
-        Pos = (Pos + 1) % 64
+        Pos = (Pos + 1) % L
     end
 end
 
