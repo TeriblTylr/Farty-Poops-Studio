@@ -1,6 +1,6 @@
 local roll = {}
 
-roll.notes = {}
+roll.rNotes = {}
 
 roll.playing = false
 
@@ -42,13 +42,37 @@ function roll:pp()
     end
 end
 
--- function roll:update(audio, instrument)
+function roll:update(audio, instrument)
+    if self.playing == true then
+        self.rNotes = self:getNotes(L)
+        for note = 0, 127 do
+            if self.rNotes[note].posnotes[Pos] ~= 0 then
+                audio.dsp_note_on(instrument, Notes.ntf(note), 0.5)
+            end
+        end
+        self.free(self.rNotes, L)
+        Pos = (Pos + 1) % 64
+    end
+end
 
--- end
+function roll:draw()
+    self.rNotes = Roll:getNotes(L)
 
--- function roll:draw(x, y)
+    for note = 0, 127 do
+        local row = self.rNotes[note]
+        for pos = 0, L - 1 do
+            local v = row.posnotes[pos]
 
--- end
+            if v ~= 0 then
+                local x = pos * math.floor(W / L)
+                local y = note * math.floor(H / 128)
+                Love.graphics.rectangle("fill", x, y, math.floor(W/L), math.floor(H/128))
+            end
+        end
+    end
+
+    self.free(self.rNotes, L)
+end
 
 function roll.free(rNotes, length)
     croll.free_pattern(rNotes, length)

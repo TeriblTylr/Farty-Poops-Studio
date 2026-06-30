@@ -3,19 +3,21 @@ local ffi = require("ffi")
 ffi.cdef[[
 void dsp_note_on(int timbre, float freq, float gain);
 void dsp_note_off(float freq);
+void dsp_all_notes_off(void);
 int  start_audio();
 ]]
 local audio = ffi.load("audio.dll")
 local instrument = 1
+Pos = 0
+local t = 0
 function Love.load()
     Notes = require("notes")
     Roll = require("roll/roll")
     H = Love.graphics.getHeight()
     W = Love.graphics.getWidth()
-    Tempo = 120
+    Tempo = 200
     L = 64
     Roll.initialize(L)
-    Love.graphics.setColor(0.8,0,0)
 end
 
 local audio_started = false
@@ -53,34 +55,37 @@ function Love.keyreleased(key)
 end
 
 function Love.mousepressed(x, y, button, istouch)
+    H = Love.graphics.getHeight()
+    W = Love.graphics.getWidth()
     if button == 1 then
-        H = Love.graphics.getHeight()
-        W = Love.graphics.getWidth()
-        local gridx = math.floor(x/math.floor(W/L))
+        local gridx = math.floor(x/math.floor(W/64))
         local gridy = math.floor(y/math.floor(H/128))
         Roll.addNote(L, gridx, gridy)
     end
 end
 
-function Love.update(dt)
-    -- Roll:update(audio, instrument)
+
+local function every(interval, dt, timer)
+    timer = timer + dt
+    if timer >= interval then
+        timer = timer - interval
+        return true, timer
+    end
+    return false, timer
 end
 
-function Love.draw()
-    local rNotes = Roll:getNotes(L)
 
-    for note = 0, 127 do
-        local row = rNotes[note]
-        for pos = 0, L - 1 do
-            local v = row.posnotes[pos]
+function Love.update(dt)
+    
+    local fire, newt = every(60 / Tempo, dt, t)
+    t = newt
 
-            if v ~= 0 then
-                local x = pos * math.floor(W / L)
-                local y = note * math.floor(H / 128)
-                Love.graphics.rectangle("fill", x, y, math.floor(W/L), math.floor(H/128))
-            end
-        end
+    if fire then
+        audio.dsp_all_notes_off()
+        Roll:update(audio, instrument)
     end
-
-    Roll.free(rNotes, L)
+    
+end
+function Love.draw()
+    Roll:draw()
 end
