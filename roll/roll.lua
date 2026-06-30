@@ -14,8 +14,14 @@ ffi.cdef[[
     
 ]]
 
+local croll = ffi.load("roll.dll")
+
+function roll:initialize()
+    Love.filesystem.write()
+end
+
 function roll:addNote(pos, note)
-    
+    croll.write_pattern(pos, note)
 end
 
 function roll:getNotes()

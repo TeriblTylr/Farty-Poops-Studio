@@ -9,7 +9,7 @@ local audio = ffi.load("audio.dll")
 local instrument = 1
 function Love.load()
     Notes = require("notes")
-    Roll = require("roll")
+    Roll = require("roll/roll")
     H = Love.graphics.getHeight()
     W = Love.graphics.getWidth()
     Tempo = 200
