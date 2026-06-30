@@ -1,4 +1,3 @@
-// dsp.c
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -22,18 +21,17 @@ void dsp_all_notes_off(void) {
 
 __declspec(dllexport)
 void dsp_note_on(int timbre, float freq, float gain) {
-    // find a free voice
     for (int i = 0; i < MAX_VOICES; i++) {
         if (!voices[i].active) {
             voices[i].active = 1;
-            voices[i].timbre = timbre;
+            voices[i].timbre = timbre; // timbre i hardly know re
             voices[i].freq   = freq;
             voices[i].gain   = gain;
             voices[i].phase  = 0.0f;
             return;
         }
     }
-    // simple: if no free voice, steal voice 0
+    
     voices[0].active = 1;
     voices[0].timbre = timbre;
     voices[0].freq   = freq;
@@ -43,7 +41,7 @@ void dsp_note_on(int timbre, float freq, float gain) {
 
 __declspec(dllexport)
 void dsp_note_off(float freq) {
-    // naive: turn off first voice with matching freq
+    
     for (int i = 0; i < MAX_VOICES; i++) {
         if (voices[i].active && voices[i].freq == freq) {
             voices[i].active = 0;
