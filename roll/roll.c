@@ -24,7 +24,7 @@ void init_pattern(unsigned short length)
         return;
     }
 
-    size_t pad_bytes = (8 * length) + 2;
+    size_t pad_bytes = (16 * length) + 2;
     unsigned char *zeros = calloc(pad_bytes, 1);
     fwrite(zeros, 1, pad_bytes, f);
     free(zeros);
@@ -84,11 +84,11 @@ rollNotes* read_pattern(unsigned short length)
     // Skip length header
     fseek(f, 2, SEEK_SET);
 
-    rollNotes *notes = malloc(length * sizeof(rollNotes));
+    rollNotes *notes = malloc(128 * sizeof(rollNotes));
 
     unsigned int bytes_per_note = length / 8;
 
-    for (int note = 0; note < length; note++) {
+    for (int note = 0; note < 128; note++) {
         notes[note].pos = note;
         notes[note].posnotes = calloc(length, sizeof(unsigned short));
 
@@ -113,7 +113,7 @@ rollNotes* read_pattern(unsigned short length)
 __declspec(dllexport)
 void free_pattern(rollNotes *notes, unsigned short length)
 {
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < 128; i++) {
         free(notes[i].posnotes);
     }
     free(notes);

@@ -46,10 +46,9 @@ end
 
 -- end
 
-function roll:draw(x, y)
-    Love.graphics.setColor(0.8, 0, 0)
-    Love.graphics.rectangle("fill", (x-1)*20, (y-1)*10, 20, 10)
-end
+-- function roll:draw(x, y)
+
+-- end
 
 function roll.free(rNotes, length)
     croll.free_pattern(rNotes, length)
