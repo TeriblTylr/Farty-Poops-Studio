@@ -44,6 +44,7 @@ end
 
 function roll:update(audio, instrument)
     if self.playing == true then
+        audio.dsp_all_notes_off()
         self.rNotes = self:getNotes(L)
         for note = 0, 127 do
             if self.rNotes[note].posnotes[Pos] ~= 0 then

@@ -81,7 +81,6 @@ function Love.update(dt)
     t = newt
 
     if fire then
-        audio.dsp_all_notes_off()
         Roll:update(audio, instrument)
     end
     
