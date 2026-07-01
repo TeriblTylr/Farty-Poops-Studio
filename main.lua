@@ -58,7 +58,7 @@ function Love.mousepressed(x, y, button, istouch)
     H = Love.graphics.getHeight()
     W = Love.graphics.getWidth()
     if button == 1 then
-        local gridx = math.floor(x/math.floor(W/64))
+        local gridx = math.floor(x/math.floor(W/L))
         local gridy = math.floor(y/math.floor(H/128))
         Roll.addNote(L, gridx, gridy)
     end
